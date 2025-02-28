@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // DOM elements
     const boardElement = document.getElementById('board');
-    const piecesElement = document.getElementById('pieces');
     const rotateButton = document.getElementById('rotate-btn');
     const resetButton = document.getElementById('reset-btn');
 
@@ -136,7 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create the pieces
     function createPieces() {
-        piecesElement.innerHTML = '';
+        const piecesLeftElement = document.getElementById('pieces-left');
+        const piecesRightElement = document.getElementById('pieces-right');
+        
+        piecesLeftElement.innerHTML = '';
+        piecesRightElement.innerHTML = '';
         
         pieceShapes.forEach((shape, index) => {
             const pieceElement = document.createElement('div');
@@ -149,14 +152,25 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const pieceGrid = document.createElement('div');
             pieceGrid.classList.add('piece-grid');
-            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 60px)`;
-            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 60px)`;
             
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
+            // Use a 4x4 grid for all pieces to ensure consistent space for rotations
+            pieceGrid.style.gridTemplateColumns = `repeat(4, 60px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(4, 60px)`;
+            
+            // Center the piece in the 4x4 grid
+            const offsetRow = Math.floor((4 - rows) / 2);
+            const offsetCol = Math.floor((4 - cols) / 2);
+            
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
                     const cell = document.createElement('div');
                     
-                    if (shape[row] && shape[row][col] === 1) {
+                    const shapeRow = row - offsetRow;
+                    const shapeCol = col - offsetCol;
+                    
+                    if (shapeRow >= 0 && shapeRow < rows && 
+                        shapeCol >= 0 && shapeCol < cols && 
+                        shape[shapeRow] && shape[shapeRow][shapeCol] === 1) {
                         cell.classList.add('piece-cell');
                     } else {
                         cell.classList.add('piece-cell', 'empty');
@@ -167,7 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             pieceElement.appendChild(pieceGrid);
-            piecesElement.appendChild(pieceElement);
+            
+            // Add first 4 pieces to left side, rest to right side
+            if (index < 4) {
+                piecesLeftElement.appendChild(pieceElement);
+            } else {
+                piecesRightElement.appendChild(pieceElement);
+            }
         });
     }
 
@@ -551,14 +571,25 @@ function removePieceFromBoard(placedIndex) {
         
         const pieceGrid = piece.element.querySelector('.piece-grid');
         pieceGrid.innerHTML = '';
-        pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
-        pieceGrid.style.gridTemplateRows = `repeat(${rows}, 30px)`;
         
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
+        // Use a 4x4 grid for all pieces to ensure consistent space for rotations
+        pieceGrid.style.gridTemplateColumns = `repeat(4, 60px)`;
+        pieceGrid.style.gridTemplateRows = `repeat(4, 60px)`;
+        
+        // Center the piece in the 4x4 grid
+        const offsetRow = Math.floor((4 - rows) / 2);
+        const offsetCol = Math.floor((4 - cols) / 2);
+        
+        for (let row = 0; row < 4; row++) {
+            for (let col = 0; col < 4; col++) {
                 const cell = document.createElement('div');
                 
-                if (shape[row] && shape[row][col] === 1) {
+                const shapeRow = row - offsetRow;
+                const shapeCol = col - offsetCol;
+                
+                if (shapeRow >= 0 && shapeRow < rows && 
+                    shapeCol >= 0 && shapeCol < cols && 
+                    shape[shapeRow] && shape[shapeRow][shapeCol] === 1) {
                     cell.classList.add('piece-cell');
                 } else {
                     cell.classList.add('piece-cell', 'empty');
