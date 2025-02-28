@@ -149,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const pieceGrid = document.createElement('div');
             pieceGrid.classList.add('piece-grid');
-            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
-            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 30px)`;
+            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 60px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 60px)`;
             
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
@@ -497,8 +497,8 @@ function removePieceFromBoard(placedIndex) {
         const pieceGrid = pieceElement.querySelector('.piece-grid');
         if (pieceGrid) {
             pieceGrid.innerHTML = '';
-            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
-            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 30px)`;
+            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 60px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 60px)`;
 
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {

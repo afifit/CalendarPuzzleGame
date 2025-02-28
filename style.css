@@ -108,8 +108,8 @@ h2 {
 }
 
 .piece-cell {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     background-color: #4CAF50;
     border: 1px solid #2E7D32;
 }
@@ -186,8 +186,8 @@ button:active {
     }
     
     .piece-cell {
-        width: 25px;
-        height: 25px;
+        width: 45px;
+        height: 45px;
     }
     
     button {
