@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calendar Puzzle Game</title>
+    <title>Wooden Calendar Puzzle</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wood: {
+                            light: '#d4a373',
+                            DEFAULT: '#a87328',
+                            dark: '#774d24',
+                            darker: '#5c3c17'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Calendar Puzzle Game</h1>
+<body class="bg-amber-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-wood-dark text-center mb-8 font-serif">Wooden Calendar Puzzle</h1>
         
         <div class="game-area">
             <div class="board-container">
-                <h2>Puzzle Board</h2>
-                <div id="board"></div>
-                <div class="controls">
-                    <button id="rotate-btn">Rotate Selected Piece</button>
-                    <button id="reset-btn">Reset Game</button>
+                <h2 class="text-2xl font-serif text-wood-dark mb-4">Puzzle Board</h2>
+                <div id="board" class="shadow-xl"></div>
+                <div class="controls mt-6 flex flex-wrap gap-4">
+                    <button id="rotate-btn" class="wooden-btn">Rotate Selected Piece</button>
+                    <button id="reset-btn" class="wooden-btn bg-red-800 hover:bg-red-900">Reset Game</button>
                 </div>
-                <div class="instructions">
-                    <p>Drag pieces onto the board. Drag pieces off the board to remove them.</p>
+                <div class="instructions mt-4 bg-amber-100 border-l-4 border-wood p-4 rounded-r">
+                    <p class="text-wood-dark">Drag pieces onto the board. Drag pieces off the board to remove them.</p>
                 </div>
             </div>
             
-            <div class="pieces-container">
-                <h2>Puzzle Pieces</h2>
+            <div class="pieces-container mt-8">
+                <h2 class="text-2xl font-serif text-wood-dark mb-4">Puzzle Pieces</h2>
                 <div class="carousel-container">
                     <button id="prev-btn" class="carousel-btn carousel-btn-prev">&lt;</button>
                     <div class="carousel-wrapper">
