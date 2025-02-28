@@ -219,10 +219,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
                 }
                 
-                // Set drag image (optional)
+                // Create a custom drag image that only shows the colored cells
                 const pieceGrid = piece.querySelector('.piece-grid');
                 if (pieceGrid) {
-                    e.dataTransfer.setDragImage(pieceGrid, 15, 15);
+                    // Create a clone of the grid for the drag image
+                    const dragImage = pieceGrid.cloneNode(true);
+                    dragImage.style.position = 'absolute';
+                    dragImage.style.top = '-1000px';
+                    document.body.appendChild(dragImage);
+                
+                    // Find the first non-empty cell to use as the drag handle point
+                    const cells = Array.from(pieceGrid.querySelectorAll('.piece-cell:not(.empty)'));
+                    let offsetX = 30;
+                    let offsetY = 30;
+                
+                    if (cells.length > 0) {
+                        const firstCell = cells[0];
+                        const rect = firstCell.getBoundingClientRect();
+                        const gridRect = pieceGrid.getBoundingClientRect();
+                        offsetX = rect.left - gridRect.left + rect.width / 2;
+                        offsetY = rect.top - gridRect.top + rect.height / 2;
+                    }
+                
+                    e.dataTransfer.setDragImage(dragImage, offsetX, offsetY);
+                
+                    // Remove the clone after a short delay
+                    setTimeout(() => {
+                        document.body.removeChild(dragImage);
+                    }, 100);
                 }
                 
                 // Set data (required for Firefox)
@@ -412,6 +436,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const shape = selectedPiece.shape;
         const rows = shape.length;
         const cols = Math.max(...shape.map(row => row.length));
+        
+        // Find the first filled cell in the shape to use as the anchor point
+        let anchorRow = 0;
+        let anchorCol = 0;
+        let foundAnchor = false;
+        
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                if (shape[r] && shape[r][c] === 1) {
+                    anchorRow = r;
+                    anchorCol = c;
+                    foundAnchor = true;
+                    break;
+                }
+            }
+            if (foundAnchor) break;
+        }
+        
+        // Adjust the starting position based on the anchor point
+        startRow = startRow - anchorRow;
+        startCol = startCol - anchorCol;
         
         // Check if the piece fits on the board
         for (let row = 0; row < rows; row++) {

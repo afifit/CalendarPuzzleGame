@@ -121,6 +121,7 @@ h2 {
 .piece-cell.empty {
     background-color: transparent;
     border: none;
+    visibility: hidden;
 }
 
 .controls {
