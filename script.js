@@ -502,7 +502,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Update the visual board
                 const cell = document.querySelector(`.cell[data-row="${boardRow}"][data-col="${boardCol}"]`);
-                cell.style.backgroundColor = '#4CAF50';
+                
+                // Use different colors for different pieces to make them distinguishable
+                const pieceColors = [
+                    '#4CAF50', // Green
+                    '#2196F3', // Blue
+                    '#F44336', // Red
+                    '#FF9800', // Orange
+                    '#9C27B0', // Purple
+                    '#FFEB3B', // Yellow
+                    '#795548', // Brown
+                    '#607D8B'  // Blue Grey
+                ];
+                
+                cell.style.backgroundColor = pieceColors[selectedPiece.id % pieceColors.length];
                 cell.style.color = 'white';
                 cell.classList.add('piece-part');
                 cell.dataset.pieceId = selectedPiece.id;
