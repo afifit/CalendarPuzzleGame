@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Calendar Puzzle Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,8 +19,13 @@
             <div class="pieces-container">
                 <h2>Puzzle Pieces</h2>
                 <div id="pieces"></div>
-                <button id="rotate-btn">Rotate Selected Piece</button>
-                <button id="reset-btn">Reset Game</button>
+                <div class="controls">
+                    <button id="rotate-btn">Rotate Selected Piece</button>
+                    <button id="reset-btn">Reset Game</button>
+                </div>
+                <div class="instructions">
+                    <p>Drag pieces onto the board. Drag pieces off the board to remove them.</p>
+                </div>
             </div>
         </div>
     </div>
