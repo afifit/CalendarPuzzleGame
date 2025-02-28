@@ -31,6 +31,8 @@ h2 {
     gap: 20px;
     justify-content: center;
     align-items: flex-start;
+    position: relative;
+    z-index: 1;
 }
 
 .board-container, .pieces-container {
@@ -42,6 +44,8 @@ h2 {
 
 .pieces-container {
     width: 300px;
+    position: relative;
+    z-index: 2;
 }
 
 #board {

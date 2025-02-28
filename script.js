@@ -182,6 +182,23 @@ document.addEventListener('DOMContentLoaded', () => {
             
             pieceElement.appendChild(pieceGrid);
             
+            // Use different colors for different pieces to make them distinguishable
+            const pieceColors = [
+                '#4CAF50', // Green
+                '#2196F3', // Blue
+                '#F44336', // Red
+                '#FF9800', // Orange
+                '#9C27B0', // Purple
+                '#FFEB3B', // Yellow
+                '#795548', // Brown
+                '#607D8B'  // Blue Grey
+            ];
+            
+            // Apply the color to the piece cells
+            pieceElement.querySelectorAll('.piece-cell:not(.empty)').forEach(cell => {
+                cell.style.backgroundColor = pieceColors[index % pieceColors.length];
+            });
+            
             // Add first 4 pieces to left side, rest to right side
             if (index < 4) {
                 piecesLeftElement.appendChild(pieceElement);
@@ -649,6 +666,20 @@ function removePieceFromBoard(placedIndex) {
                     shapeCol >= 0 && shapeCol < cols && 
                     shape[shapeRow] && shape[shapeRow][shapeCol] === 1) {
                     cell.classList.add('piece-cell');
+                    
+                    // Use different colors for different pieces
+                    const pieceColors = [
+                        '#4CAF50', // Green
+                        '#2196F3', // Blue
+                        '#F44336', // Red
+                        '#FF9800', // Orange
+                        '#9C27B0', // Purple
+                        '#FFEB3B', // Yellow
+                        '#795548', // Brown
+                        '#607D8B'  // Blue Grey
+                    ];
+                    
+                    cell.style.backgroundColor = pieceColors[piece.id % pieceColors.length];
                 } else {
                     cell.classList.add('piece-cell', 'empty');
                 }
