@@ -195,8 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     selectedPiece = {
                         element: piece,
                         id: parseInt(piece.dataset.pieceId),
-                        shape:
-JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
+                        shape: JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
                     };
                 }
                 
@@ -226,8 +225,7 @@ JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
                     selectedPiece = {
                         element: piece,
                         id: parseInt(piece.dataset.pieceId),
-                        shape:
-JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
+                        shape: JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
                     };
                 }
             });
@@ -535,6 +533,11 @@ function removePieceFromBoard(placedIndex) {
                     rotated[col][rows - 1 - row] = shape[row][col];
                 }
             }
+        }
+        
+        // Store the rotated shape on the piece element
+        if (selectedPiece && selectedPiece.element) {
+            selectedPiece.element.dataset.rotatedShape = JSON.stringify(rotated);
         }
         
         return rotated;
