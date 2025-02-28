@@ -58,6 +58,10 @@ h2 {
     background-color: #f9f9f9;
 }
 
+.cell.drag-over {
+    background-color: rgba(76, 175, 80, 0.2);
+}
+
 .cell.disabled {
     background-color: #ddd;
     color: #999;
@@ -74,10 +78,15 @@ h2 {
     cursor: grab;
     margin-bottom: 15px;
     margin-right: 15px;
+    user-select: none;
 }
 
 .piece.selected {
     outline: 3px solid #4CAF50;
+}
+
+.piece:active {
+    cursor: grabbing;
 }
 
 .piece-grid {

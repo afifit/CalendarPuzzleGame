@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const pieceElement = document.createElement('div');
             pieceElement.classList.add('piece');
             pieceElement.dataset.pieceId = index;
+            pieceElement.setAttribute('draggable', 'true');
             
             const rows = shape.length;
             const cols = Math.max(...shape.map(row => row.length));
@@ -171,8 +172,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup event listeners
     function setupEventListeners() {
-        // Piece selection
+        // Make pieces draggable
         document.querySelectorAll('.piece').forEach(piece => {
+            if (piece.classList.contains('placed')) return;
+            
+            piece.setAttribute('draggable', 'true');
+            
+            piece.addEventListener('dragstart', (e) => {
+                // Clear any previous selection
+                document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
+                
+                // Mark this piece as selected
+                piece.classList.add('selected');
+                selectedPiece = {
+                    element: piece,
+                    id: parseInt(piece.dataset.pieceId),
+                    shape: JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
+                };
+                
+                // Set drag image (optional)
+                const pieceGrid = piece.querySelector('.piece-grid');
+                if (pieceGrid) {
+                    e.dataTransfer.setDragImage(pieceGrid, 15, 15);
+                }
+                
+                // Set data (required for Firefox)
+                e.dataTransfer.setData('text/plain', piece.dataset.pieceId);
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            
             piece.addEventListener('click', () => {
                 if (piece.classList.contains('placed')) return;
                 
@@ -186,7 +214,45 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Board cell click for placement
+        // Make board cells drop targets
+        boardElement.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow drop
+            e.dataTransfer.dropEffect = 'move';
+            
+            // Visual feedback
+            const cell = e.target.closest('.cell');
+            if (cell) {
+                cell.classList.add('drag-over');
+            }
+        });
+        
+        boardElement.addEventListener('dragleave', (e) => {
+            const cell = e.target.closest('.cell');
+            if (cell) {
+                cell.classList.remove('drag-over');
+            }
+        });
+        
+        boardElement.addEventListener('drop', (e) => {
+            e.preventDefault();
+            
+            if (!selectedPiece) return;
+            
+            const cell = e.target.closest('.cell');
+            if (!cell) return;
+            
+            // Remove any drag-over styling
+            document.querySelectorAll('.cell').forEach(c => {
+                c.classList.remove('drag-over');
+            });
+            
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            
+            tryPlacePiece(row, col);
+        });
+        
+        // Keep click placement as fallback
         boardElement.addEventListener('click', (e) => {
             const cell = e.target.closest('.cell');
             if (!cell || !selectedPiece) return;
