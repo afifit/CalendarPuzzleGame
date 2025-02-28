@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Calendar Puzzle Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,9 +26,12 @@
             
             <div class="pieces-container">
                 <h2>Puzzle Pieces</h2>
-                <div id="pieces-container">
-                    <div id="pieces-left"></div>
-                    <div id="pieces-right"></div>
+                <div class="carousel-container">
+                    <button id="prev-btn" class="carousel-btn carousel-btn-prev">&lt;</button>
+                    <div class="carousel-wrapper">
+                        <div id="pieces-carousel" class="carousel-track"></div>
+                    </div>
+                    <button id="next-btn" class="carousel-btn carousel-btn-next">&gt;</button>
                 </div>
             </div>
         </div>

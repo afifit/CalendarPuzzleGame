@@ -135,11 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create the pieces
     function createPieces() {
-        const piecesLeftElement = document.getElementById('pieces-left');
-        const piecesRightElement = document.getElementById('pieces-right');
-        
-        piecesLeftElement.innerHTML = '';
-        piecesRightElement.innerHTML = '';
+        const carouselTrack = document.getElementById('pieces-carousel');
+        carouselTrack.innerHTML = '';
         
         pieceShapes.forEach((shape, index) => {
             const pieceElement = document.createElement('div');
@@ -199,17 +196,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.style.backgroundColor = pieceColors[index % pieceColors.length];
             });
             
-            // Add first 4 pieces to left side, rest to right side
-            if (index < 4) {
-                piecesLeftElement.appendChild(pieceElement);
-            } else {
-                piecesRightElement.appendChild(pieceElement);
-            }
+            carouselTrack.appendChild(pieceElement);
         });
+        
+        // Initialize carousel position
+        updateCarouselPosition();
     }
 
     // Setup event listeners
     function setupEventListeners() {
+        // Carousel navigation
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        prevBtn.addEventListener('click', () => {
+            navigateCarousel(-1);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            navigateCarousel(1);
+        });
+        
         // Make pieces draggable
         document.querySelectorAll('.piece').forEach(piece => {
             if (piece.classList.contains('placed')) return;
@@ -727,6 +734,57 @@ function removePieceFromBoard(placedIndex) {
         });
     }
 
+    // Carousel functionality
+    let currentCarouselPosition = 0;
+    const visiblePieces = 4; // Number of pieces visible at once
+    
+    function navigateCarousel(direction) {
+        const carouselTrack = document.getElementById('pieces-carousel');
+        const pieces = carouselTrack.querySelectorAll('.piece');
+        const maxPosition = Math.max(0, pieces.length - visiblePieces);
+        
+        currentCarouselPosition += direction;
+        
+        // Ensure we don't go out of bounds
+        if (currentCarouselPosition < 0) {
+            currentCarouselPosition = 0;
+        } else if (currentCarouselPosition > maxPosition) {
+            currentCarouselPosition = maxPosition;
+        }
+        
+        updateCarouselPosition();
+    }
+    
+    function updateCarouselPosition() {
+        const carouselTrack = document.getElementById('pieces-carousel');
+        const pieces = carouselTrack.querySelectorAll('.piece');
+        
+        if (pieces.length === 0) return;
+        
+        // Calculate the width of a piece plus gap
+        const pieceWidth = pieces[0].offsetWidth;
+        const gap = 20; // This should match the gap in CSS
+        const offset = currentCarouselPosition * (pieceWidth + gap);
+        
+        carouselTrack.style.transform = `translateX(-${offset}px)`;
+        
+        // Update button states
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        prevBtn.disabled = currentCarouselPosition === 0;
+        prevBtn.style.opacity = currentCarouselPosition === 0 ? '0.5' : '1';
+        
+        const maxPosition = Math.max(0, pieces.length - visiblePieces);
+        nextBtn.disabled = currentCarouselPosition >= maxPosition;
+        nextBtn.style.opacity = currentCarouselPosition >= maxPosition ? '0.5' : '1';
+    }
+    
     // Initialize the game
     initGame();
+    
+    // Handle window resize to update carousel
+    window.addEventListener('resize', () => {
+        updateCarouselPosition();
+    });
 });

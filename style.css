@@ -55,11 +55,60 @@ h2 {
     z-index: 1;
 }
 
-#pieces-container {
+.carousel-container {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-wrapper {
+    width: 80%;
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
     gap: 20px;
+    padding: 10px 0;
+}
+
+.carousel-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+}
+
+.carousel-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+.carousel-btn:active {
+    transform: scale(0.95);
+}
+
+.carousel-btn-prev {
+    margin-right: 10px;
+}
+
+.carousel-btn-next {
+    margin-left: 10px;
 }
 
 #board {
@@ -226,6 +275,10 @@ button:active {
     .piece.selected {
         transform: scale(0.9);
     }
+    
+    .carousel-wrapper {
+        width: 70%;
+    }
 }
 
 @media (max-width: 768px) {
@@ -254,5 +307,15 @@ button:active {
     .piece-grid {
         transform: scale(0.75);
         transform-origin: top left;
+    }
+    
+    .carousel-wrapper {
+        width: 60%;
+    }
+    
+    .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
     }
 }
