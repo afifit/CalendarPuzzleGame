@@ -154,8 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
             pieceGrid.classList.add('piece-grid');
             
             // Use a 4x4 grid for all pieces to ensure consistent space for rotations
-            pieceGrid.style.gridTemplateColumns = `repeat(4, 60px)`;
-            pieceGrid.style.gridTemplateRows = `repeat(4, 60px)`;
+            pieceGrid.style.gridTemplateColumns = `repeat(4, 50px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(4, 50px)`;
             
             // Center the piece in the 4x4 grid
             const offsetRow = Math.floor((4 - rows) / 2);
@@ -592,8 +592,8 @@ function removePieceFromBoard(placedIndex) {
         const pieceGrid = pieceElement.querySelector('.piece-grid');
         if (pieceGrid) {
             pieceGrid.innerHTML = '';
-            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 60px)`;
-            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 60px)`;
+            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
 
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
@@ -648,8 +648,8 @@ function removePieceFromBoard(placedIndex) {
         pieceGrid.innerHTML = '';
         
         // Use a 4x4 grid for all pieces to ensure consistent space for rotations
-        pieceGrid.style.gridTemplateColumns = `repeat(4, 60px)`;
-        pieceGrid.style.gridTemplateRows = `repeat(4, 60px)`;
+        pieceGrid.style.gridTemplateColumns = `repeat(4, 50px)`;
+        pieceGrid.style.gridTemplateRows = `repeat(4, 50px)`;
         
         // Center the piece in the 4x4 grid
         const offsetRow = Math.floor((4 - rows) / 2);

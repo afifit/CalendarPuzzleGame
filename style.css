@@ -28,11 +28,13 @@ h2 {
 
 .game-area {
     display: flex;
-    gap: 20px;
-    justify-content: center;
+    gap: 30px;
+    justify-content: space-between;
     align-items: flex-start;
     position: relative;
     z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .board-container, .pieces-container {
@@ -43,9 +45,10 @@ h2 {
 }
 
 .pieces-container {
-    width: 300px;
+    width: 280px;
     position: relative;
     z-index: 2;
+    flex-shrink: 0;
 }
 
 #board {
@@ -117,8 +120,8 @@ h2 {
 }
 
 .piece-cell {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: #4CAF50;
     border: 1px solid #2E7D32;
 }
@@ -128,6 +131,9 @@ h2 {
     border-radius: 4px;
     padding: 4px;
     background-color: #f0f0f0;
+    margin-bottom: 20px;
+    transform-origin: center;
+    transform: scale(0.8);
 }
 
 .piece-cell.empty {
@@ -194,14 +200,19 @@ button:active {
     
     .pieces-container {
         width: 100%;
-        max-width: 600px;
+        max-width: 500px;
         margin-bottom: 20px;
     }
     
     #pieces-left, #pieces-right {
-        flex-direction: row;
-        flex-wrap: wrap;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
         justify-content: center;
+    }
+    
+    .piece {
+        transform: scale(0.7);
+        margin: 0 auto;
     }
 }
 
