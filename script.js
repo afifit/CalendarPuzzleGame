@@ -648,8 +648,8 @@ function removePieceFromBoard(placedIndex) {
         pieceGrid.innerHTML = '';
         
         // Use a 4x4 grid for all pieces to ensure consistent space for rotations
-        pieceGrid.style.gridTemplateColumns = `repeat(4, 50px)`;
-        pieceGrid.style.gridTemplateRows = `repeat(4, 50px)`;
+        pieceGrid.style.gridTemplateColumns = `repeat(4, 60px)`;
+        pieceGrid.style.gridTemplateRows = `repeat(4, 60px)`;
         
         // Center the piece in the 4x4 grid
         const offsetRow = Math.floor((4 - rows) / 2);
