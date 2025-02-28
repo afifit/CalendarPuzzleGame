@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let boardState = Array(7).fill().map(() => Array(7).fill(null));
     let selectedPiece = null;
     let placedPieces = [];
+    let isDraggingPlacedPiece = false;
     
     // DOM elements
     const boardElement = document.getElementById('board');
@@ -184,11 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Mark this piece as selected
                 piece.classList.add('selected');
-                selectedPiece = {
-                    element: piece,
-                    id: parseInt(piece.dataset.pieceId),
-                    shape: JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
-                };
+                if (piece.dataset.rotatedShape) {
+                    selectedPiece = {
+                        element: piece,
+                        id: parseInt(piece.dataset.pieceId),
+                        shape: JSON.parse(piece.dataset.rotatedShape)
+                    };
+                } else {
+                    selectedPiece = {
+                        element: piece,
+                        id: parseInt(piece.dataset.pieceId),
+                        shape:
+JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
+                    };
+                }
                 
                 // Set drag image (optional)
                 const pieceGrid = piece.querySelector('.piece-grid');
@@ -206,15 +216,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
                 piece.classList.add('selected');
-                selectedPiece = {
-                    element: piece,
-                    id: parseInt(piece.dataset.pieceId),
-                    shape: JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
-                };
+                if (piece.dataset.rotatedShape) {
+                    selectedPiece = {
+                        element: piece,
+                        id: parseInt(piece.dataset.pieceId),
+                        shape: JSON.parse(piece.dataset.rotatedShape)
+                    };
+                } else {
+                    selectedPiece = {
+                        element: piece,
+                        id: parseInt(piece.dataset.pieceId),
+                        shape:
+JSON.parse(JSON.stringify(pieceShapes[parseInt(piece.dataset.pieceId)]))
+                    };
+                }
             });
         });
         
-        // Make board cells drop targets
+        // Make board cells drop targets and draggable
         boardElement.addEventListener('dragover', (e) => {
             e.preventDefault(); // Allow drop
             e.dataTransfer.dropEffect = 'move';
@@ -232,6 +251,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.classList.remove('drag-over');
             }
         });
+        
+        // Make placed pieces draggable (for removal)
+        boardElement.addEventListener('mousedown', (e) => {
+            const cell = e.target.closest('.cell.piece-part');
+            if (!cell) return;
+            
+            const placedIndex = cell.dataset.placedIndex;
+            if (placedIndex === undefined) return;
+            
+            // Highlight all cells of this piece
+            document.querySelectorAll(`.cell[data-placed-index="${placedIndex}"]`).forEach(cell => {
+                cell.classList.add('removing');
+            });
+            
+            isDraggingPlacedPiece = true;
+        });
+        
+        // Handle touch events for mobile
+        boardElement.addEventListener('touchstart', (e) => {
+            const cell = e.target.closest('.cell.piece-part');
+            if (!cell) return;
+            
+            const placedIndex = cell.dataset.placedIndex;
+            if (placedIndex === undefined) return;
+            
+            // Highlight all cells of this piece
+            document.querySelectorAll(`.cell[data-placed-index="${placedIndex}"]`).forEach(cell => {
+                cell.classList.add('removing');
+            });
+            
+            isDraggingPlacedPiece = true;
+        }, { passive: false });
+        
+        document.addEventListener('mouseup', (e) => {
+            if (!isDraggingPlacedPiece) return;
+            
+            const removingCells = document.querySelectorAll('.cell.removing');
+            if (removingCells.length === 0) return;
+            
+            const placedIndex = removingCells[0].dataset.placedIndex;
+            
+            // Check if mouse is outside the board (to remove the piece)
+            const boardRect = boardElement.getBoundingClientRect();
+            if (
+                e.clientX < boardRect.left || 
+                e.clientX > boardRect.right || 
+                e.clientY < boardRect.top || 
+                e.clientY > boardRect.bottom
+            ) {
+                removePieceFromBoard(placedIndex);
+            }
+            
+            // Remove highlighting
+            removingCells.forEach(cell => {
+                cell.classList.remove('removing');
+            });
+            
+            isDraggingPlacedPiece = false;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            if (!isDraggingPlacedPiece) return;
+            
+            const removingCells = document.querySelectorAll('.cell.removing');
+            if (removingCells.length === 0) return;
+            
+            const placedIndex = removingCells[0].dataset.placedIndex;
+            
+            // Get touch position
+            const touch = e.changedTouches[0];
+            const boardRect = boardElement.getBoundingClientRect();
+            
+            // Check if touch ended outside the board (to remove the piece)
+            if (
+                touch.clientX < boardRect.left || 
+                touch.clientX > boardRect.right || 
+                touch.clientY < boardRect.top || 
+                touch.clientY > boardRect.bottom
+            ) {
+                removePieceFromBoard(placedIndex);
+            }
+            
+            // Remove highlighting
+            removingCells.forEach(cell => {
+                cell.classList.remove('removing');
+            });
+            
+            isDraggingPlacedPiece = false;
+        }, { passive: false });
         
         boardElement.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -307,6 +415,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        // Store piece data for potential removal later
+        const placedPieceData = {
+            id: selectedPiece.id,
+            startRow,
+            startCol,
+            shape: JSON.parse(JSON.stringify(selectedPiece.shape)),
+            cells: []
+        };
+        
         // Place the piece
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
@@ -315,12 +432,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const boardRow = startRow + row;
                 const boardCol = startCol + col;
                 
-                boardState[boardRow][boardCol] = selectedPiece.id;
+                boardState[boardRow][boardCol] = {
+                    pieceId: selectedPiece.id,
+                    placedIndex: placedPieces.length
+                };
                 
                 // Update the visual board
                 const cell = document.querySelector(`.cell[data-row="${boardRow}"][data-col="${boardCol}"]`);
                 cell.style.backgroundColor = '#4CAF50';
                 cell.style.color = 'white';
+                cell.classList.add('piece-part');
+                cell.dataset.pieceId = selectedPiece.id;
+                cell.dataset.placedIndex = placedPieces.length;
+                
+                // Store cell position for removal
+                placedPieceData.cells.push({row: boardRow, col: boardCol});
             }
         }
         
@@ -330,19 +456,71 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedPiece.element.style.opacity = '0.5';
         
         // Add to placed pieces
-        placedPieces.push({
-            id: selectedPiece.id,
-            startRow,
-            startCol,
-            shape: JSON.parse(JSON.stringify(selectedPiece.shape))
-        });
+        placedPieces.push(placedPieceData);
         
         // Reset selected piece
         selectedPiece = null;
         
         return true;
     }
+    
+// Remove a piece from the board
+function removePieceFromBoard(placedIndex) {
+    const pieceData = placedPieces[placedIndex];
+    if (!pieceData) return;
 
+    // Clear board state
+    pieceData.cells.forEach(({row, col}) => {
+        boardState[row][col] = null;
+
+        // Update visual board
+        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+        cell.style.backgroundColor = '';
+        cell.style.color = '';
+        cell.classList.remove('piece-part');
+        delete cell.dataset.pieceId;
+        delete cell.dataset.placedIndex;
+    });
+
+    // Find the original piece element and restore it
+    const pieceElement = document.querySelector(`.piece[data-piece-id="${pieceData.id}"]`);
+    if (pieceElement) {
+        pieceElement.classList.remove('placed');
+        pieceElement.style.opacity = '1';
+
+        // Store the rotated shape on the piece element
+        pieceElement.dataset.rotatedShape = JSON.stringify(pieceData.shape);
+
+        // Update the visual representation to match the rotated shape
+        const shape = pieceData.shape;
+        const rows = shape.length;
+        const cols = Math.max(...shape.map(row => row.length));
+
+        const pieceGrid = pieceElement.querySelector('.piece-grid');
+        if (pieceGrid) {
+            pieceGrid.innerHTML = '';
+            pieceGrid.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
+            pieceGrid.style.gridTemplateRows = `repeat(${rows}, 30px)`;
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cell = document.createElement('div');
+
+                    if (shape[row] && shape[row][col] === 1) {
+                        cell.classList.add('piece-cell');
+                    } else {
+                        cell.classList.add('piece-cell', 'empty');
+                    }
+
+                    pieceGrid.appendChild(cell);
+                }
+            }
+        }
+    }
+
+    // Remove from placed pieces array
+    placedPieces[placedIndex] = null;
+}
     // Rotate a shape 90 degrees clockwise
     function rotateShape(shape) {
         const rows = shape.length;
@@ -403,11 +581,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         selectedPiece = null;
         placedPieces = [];
+        isDraggingPlacedPiece = false;
         
         // Reset the board visuals
         document.querySelectorAll('.cell').forEach(cell => {
             cell.style.backgroundColor = '';
             cell.style.color = '';
+            cell.classList.remove('piece-part', 'removing');
+            delete cell.dataset.pieceId;
+            delete cell.dataset.placedIndex;
             
             if (cell.classList.contains('disabled')) {
                 cell.style.backgroundColor = '#ddd';
