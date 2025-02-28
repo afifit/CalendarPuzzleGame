@@ -110,24 +110,39 @@ class Game {
   }
 
   rotatePiece(piece) {
-    const matrix = pieces[piece.dataset.index];
-    const newMatrix = matrix[0].map((_, i) => 
-      matrix.map(row => row[row.length - 1 - i])
-    );
-    pieces[piece.dataset.index] = newMatrix;
+    piece.classList.add('rotating');
     
-    // Clear and recreate piece
-    piece.innerHTML = '';
-    piece.style.gridTemplateColumns = `repeat(${newMatrix[0].length}, 40px)`;
-    newMatrix.forEach(row => {
-      row.forEach(cell => {
-        if (cell) {
-          const cellDiv = document.createElement('div');
-          cellDiv.className = 'cell piece-cell';
-          piece.appendChild(cellDiv);
-        }
+    setTimeout(() => {
+      const index = piece.dataset.index;
+      const matrix = pieces[index];
+      
+      // Rotate matrix 90 degrees clockwise
+      const newMatrix = matrix[0].map((_, i) => 
+        matrix.map(row => row[row.length - 1 - i])
+      );
+      
+      // Update the pieces array
+      pieces[index] = newMatrix;
+      
+      // Clear and recreate piece
+      piece.innerHTML = '';
+      piece.style.gridTemplateColumns = `repeat(${newMatrix[0].length}, 40px)`;
+      piece.style.gridTemplateRows = `repeat(${newMatrix.length}, 40px)`;
+      
+      newMatrix.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          if (cell) {
+            const cellDiv = document.createElement('div');
+            cellDiv.className = 'cell piece-cell';
+            cellDiv.style.gridColumn = x + 1;
+            cellDiv.style.gridRow = y + 1;
+            piece.appendChild(cellDiv);
+          }
+        });
       });
-    });
+      
+      piece.classList.remove('rotating');
+    }, 200);
   }
 }
 
